@@ -1,0 +1,3 @@
+#!/bin/sh
+
+scala -classpath target/scala-2.9.0.1/classes Console $*
