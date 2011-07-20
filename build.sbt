@@ -6,7 +6,10 @@ scalaVersion := "2.9.0-1"
 
 pollInterval := 300
 
-libraryDependencies += "com.mongodb.casbah" %% "casbah" % "2.1.5.0"
+libraryDependencies ++= Seq(
+    "com.mongodb.casbah" %% "casbah" % "2.1.5.0",
+    "org.clapper" % "grizzled-slf4j_2.9.0" % "0.5"
+)
 
 // append -deprecation to the options passed to the Scala compiler
 scalacOptions += "-deprecation"
