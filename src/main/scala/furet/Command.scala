@@ -1,10 +1,15 @@
+package furet
+
+import furet.dao._
+import furet.model._
+
 trait Command {
   def run
 }
 
 class ListCommand extends Command {
   def run = {
-    new AlbumCollection().collection.foreach(x => println(x))
+    new AlbumRepo().findAll foreach print
   }
 }
 
@@ -23,7 +28,7 @@ class TestCommand extends Command {
 
 class NotFoundCommand extends HelpCommand {
   override def run = {
-    println("This is not a fucking valid furet command")
+    println("This is not a valid furet command")
     super.run
   }
 }
