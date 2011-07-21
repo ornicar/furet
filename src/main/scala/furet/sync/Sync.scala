@@ -1,28 +1,28 @@
 package furet.sync
 
-import java.io.File
 import furet.model._
 import furet.dao._
-import furet.RecursiveFilesystemIterator
 
-class Sync {
-  val dirs = "/home/thib/data/Music" :: Nil map (new File(_))
-  val regex = """^(\w+)\s\-\s\[(\d+)\]\s\-\s(\w+)$""".r
-  val albumDao = new AlbumDao
-  var albums: List[Album] = List()
-  def sync {
-    albumDao.drop
-    dirs foreach ( dir =>
-      new RecursiveFilesystemIterator(syncDir) iterateDirs dir
-    )
+class Sync(log: String => Unit) {
+  val bandDao = new BandDao
+  val recordDao = new RecordDao
+  def run(fsPath: String) = {
+    val db = new DaoStoreBuilder().createStore
+    log("Database:   " + db)
+    val fs = new FilesystemWalker(fsPath).createStore
+    log("Filesystem: " + fs)
 
-    albums foreach (albumDao save _)
+    // Add bands
+    fs.bands filterNot db.bands.contains foreach addBand
+    // Add records
+    fs.records filterNot db.records.contains foreach addRecord
   }
-  def syncDir(dir: File) = {
-    dir.getName match {
-      case regex(band, year, name) =>
-        albums = new Album(band, year, name, dir.getAbsolutePath) :: albums
-      case _ =>
-    }
+  def addBand(band: Band): Unit = {
+    log("+ band " + band)
+    bandDao.save(band)
+  }
+  def addRecord(record: Record): Unit = {
+    log("+ record " + record)
+    recordDao.save(record)
   }
 }

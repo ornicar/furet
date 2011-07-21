@@ -6,10 +6,10 @@ object Console {
     var command = "sync"
     if (!args.isEmpty) command = args.head
     createCommand(command).run
-    println("bye")
   }
   def createCommand(name: String): Command = name match {
     case "sync" => new SyncCommand
+    case "rebuild" => new RebuildCommand
     case "list" => new ListCommand
     case "help" => new HelpCommand
   }

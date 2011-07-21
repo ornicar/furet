@@ -1,7 +1,6 @@
 package furet
 
 import furet.dao._
-import furet.model._
 import furet.sync._
 
 trait Command {
@@ -10,14 +9,26 @@ trait Command {
 
 class ListCommand extends Command {
   def run = {
-    new AlbumDao().findAll foreach println
+    new RecordDao().findAll foreach println
   }
 }
 
 class SyncCommand extends Command {
+  val path = "/home/thib/data/Music" 
   def run = {
-    println("Sync DB/FS")
-    new Sync().sync
+    println("Synchronize database with filesystem")
+    new Sync(message => println("  "+message)).run(path)
+    println("Create indexes")
+    new RecordDao().ensureIndexes
+  }
+}
+
+class RebuildCommand extends SyncCommand {
+  override def run = {
+    println("Drop database")
+    new RecordDao().drop
+    new BandDao().drop
+    super.run
   }
 }
 
