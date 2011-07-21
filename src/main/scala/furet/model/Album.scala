@@ -7,5 +7,5 @@ import scala.collection.mutable.{Map => MMap}
 import scala.math.{BigDecimal => ScalaBigDecimal}
 
 case class Album(band: String, year: String, name: String, path: String) {
-  override def toString() = band+" "+year+" "+name+" on "+path
+  override def toString() = band+" "+year+" "+name
 }
