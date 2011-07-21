@@ -10,7 +10,7 @@ trait Command {
 
 class ListCommand extends Command {
   def run = {
-    new AlbumDao().findAll foreach print
+    new AlbumDao().findAll foreach println
   }
 }
 
