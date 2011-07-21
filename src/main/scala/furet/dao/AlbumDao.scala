@@ -7,10 +7,11 @@ import com.novus.salat.annotations._
 import com.mongodb.casbah.Imports._
 import com.novus.salat.dao.SalatDAO
 
-class AlbumRepo {
+class AlbumDao {
   val collection = MongoConnection("localhost")("furet")("album");
-
   def findAll: Array[Album] = collection.toArray map hydrate
-
-  def hydrate(dbo: DBObject): Album = grater[Album].asObject(dbo)
+  def drop = collection remove MongoDBObject.empty
+  def save(album: Album) = collection insert serialize(album)
+  def hydrate(dbo: DBObject): Album = grater[Album] asObject dbo
+  def serialize(album: Album): DBObject = grater[Album] asDBObject album
 }

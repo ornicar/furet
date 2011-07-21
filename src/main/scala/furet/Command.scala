@@ -2,6 +2,7 @@ package furet
 
 import furet.dao._
 import furet.model._
+import furet.sync._
 
 trait Command {
   def run
@@ -9,7 +10,14 @@ trait Command {
 
 class ListCommand extends Command {
   def run = {
-    new AlbumRepo().findAll foreach print
+    new AlbumDao().findAll foreach print
+  }
+}
+
+class SyncCommand extends Command {
+  def run = {
+    println("Sync DB/FS")
+    new Sync().sync
   }
 }
 
@@ -17,12 +25,6 @@ class HelpCommand extends Command {
   def run = {
     println("furet update       Update the database, synchronizing it with the filesystem")
     println("furet help         Display this help")
-  }
-}
-
-class TestCommand extends Command {
-  def run = {
-    println("Update the database")
   }
 }
 
