@@ -4,8 +4,6 @@ import furet.model._
 import furet.dao._
 
 class Sync(log: String => Unit) {
-  val bandDao = new BandDao
-  val recordDao = new RecordDao
   def run(fsPath: String) = {
     val db = new DaoStoreBuilder().createStore
     log("Database:   " + db)
@@ -19,10 +17,10 @@ class Sync(log: String => Unit) {
   }
   def addBand(band: Band): Unit = {
     log("+ band " + band)
-    bandDao.save(band)
+    BandDao.save(band)
   }
   def addRecord(record: Record): Unit = {
     log("+ record " + record)
-    recordDao.save(record)
+    RecordDao.save(record)
   }
 }

@@ -5,7 +5,7 @@ import com.novus.salat._
 import com.novus.salat.global._
 import com.mongodb.casbah.Imports._
 
-class BandDao {
+object BandDao {
   val collection = MongoConnection("localhost")("furet")("band");
 
   def findAll: Array[Band] = collection.toArray map unserialize
@@ -15,7 +15,7 @@ class BandDao {
   def unserialize(dbo: DBObject): Band = grater[Band] asObject dbo
   def serialize(band: Band): DBObject = grater[Band] asDBObject band
 
-  def ensureIndexes = {
+  def index = {
     collection ensureIndex MongoDBObject("name" -> 1)
   }
 }

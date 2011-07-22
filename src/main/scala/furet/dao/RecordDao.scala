@@ -5,7 +5,7 @@ import com.novus.salat._
 import com.novus.salat.global._
 import com.mongodb.casbah.Imports._
 
-class RecordDao {
+object RecordDao {
   val collection = MongoConnection("localhost")("furet")("album");
 
   def findAll: Array[Record] = collection.toArray map unserialize
@@ -15,9 +15,7 @@ class RecordDao {
   def unserialize(dbo: DBObject): Record = grater[Record] asObject dbo
   def serialize(album: Record): DBObject = grater[Record] asDBObject album
 
-  def ensureIndexes = {
-    collection ensureIndex MongoDBObject("band" -> 1)
-    collection ensureIndex MongoDBObject("name" -> 1)
-    collection ensureIndex MongoDBObject("year" -> 1)
+  def index = {
+    collection.ensureIndex(MongoDBObject("band" -> 1, "year" -> 1, "name" -> 1), "unicity", true)
   }
 }
