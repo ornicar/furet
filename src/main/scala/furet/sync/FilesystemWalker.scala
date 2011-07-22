@@ -4,7 +4,7 @@ import java.io.File
 import furet.model.Store
 
 class FilesystemWalker(path: String) extends StoreBuilder {
-  val regex = """^([\s\w]+)\s\-\s\[(\d+)\]\s\-\s([\s\w]+)$""".r
+  val regex = """^(.+)\s\-\s\[(\d+)\]\s\-\s(.+)$""".r
   val root = new File(path)
 
   def createStore = {
