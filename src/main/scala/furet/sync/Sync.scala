@@ -1,26 +1,19 @@
 package furet.sync
 
 import furet.model._
+import furet.store._
 import furet.dao._
 
 class Sync(log: String => Unit) {
   def run(fsPath: String) = {
-    val db = new DaoStoreBuilder().createStore
+    val db = DbStore.create
     log("Database:   " + db)
-    val fs = new FilesystemWalker(fsPath).createStore
+    val fs = FsStore.create
     log("Filesystem: " + fs)
 
     // Add bands
-    fs.bands filterNot db.bands.contains foreach addBand
+    fs.bands filterNot db.bands.contains foreach BandDao.save
     // Add records
-    fs.records filterNot db.records.contains foreach addRecord
-  }
-  def addBand(band: Band): Unit = {
-    log("+ band " + band)
-    BandDao.save(band)
-  }
-  def addRecord(record: Record): Unit = {
-    log("+ record " + record)
-    RecordDao.save(record)
+    fs.records filterNot db.records.contains foreach RecordDao.save
   }
 }

@@ -3,45 +3,46 @@ package furet
 import furet.dao._
 import furet.sync._
 
-trait Command {
-  def run
+abstract class Command {
+  def run: Unit
 }
 
 class ListCommand extends Command {
-  def run = {
+  override def run {
     RecordDao.findAll foreach println
   }
 }
 
 class SyncCommand extends Command {
   val path = "/home/thib/data/Music"
-  def run = {
-    println("Synchronize database with filesystem")
-    new Sync(message => println("  "+message)).run(path)
+  override def run {
     println("Create indexes")
     RecordDao.index
     BandDao.index
+    println("Synchronize database with filesystem")
+    new Sync(m => println("  "+m)).run(path)
   }
 }
 
-class RebuildCommand extends SyncCommand {
-  override def run = {
+class DropCommand extends Command {
+  override def run {
     println("Drop database")
     RecordDao.drop
     BandDao.drop
-    super.run
   }
 }
 
 class HelpCommand extends Command {
-  def run = {
-    println("furet update       Update the database, synchronizing it with the filesystem")
-    println("furet help         Display this help")
+  override def run {
+    println("""Available commands:
+      |furet sync         Update the database, synchronizing it with the filesystem
+      |furet drop         Drop the database
+      |furet help         Display this help""".stripMargin)
   }
 }
 
 class NotFoundCommand extends HelpCommand {
-  override def run = {
+  override def run {
     println("This is not a valid furet command")
     super.run
   }
