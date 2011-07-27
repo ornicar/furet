@@ -1,6 +1,6 @@
 package furet.fs
 
-import furet.model._
+import furet.model.Store
 import scala.util.matching.Regex
 import java.io.File
 

@@ -39,7 +39,8 @@ object Command {
       Help,
       Sync,
       Drop,
-      FindDup
+      FindDup,
+      Search
     ).sortWith((a,b) => a.name <= b.name)
 
   def named(name: String): Option[Command] =

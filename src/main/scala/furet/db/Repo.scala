@@ -12,7 +12,10 @@ abstract class Repo(val collection: MongoCollection) {
 
   def drop() { collection remove MongoDBObject.empty }
   def save(obj: Model) { collection insert serialize(obj) }
-  def findAll: Set[Model] = collection.toSet map unserialize
+  def remove(obj: Model) { collection remove serialize(obj) }
+  def findAll: Set[Model] = find(MongoDBObject())
+  def find(query: MongoDBObject): Set[Model] =
+    collection.find(query).sort(MongoDBObject("tokens" -> -1)).toSet map unserialize
   def unserialize(dbo: DBObject): Model = mapper asObject dbo
   def serialize(obj: Model): DBObject = mapper asDBObject obj
 }

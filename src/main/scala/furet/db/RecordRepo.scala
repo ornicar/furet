@@ -9,10 +9,16 @@ class RecordRepo(collection: MongoCollection) extends Repo(collection) {
   type Model = Record
   val mapper = grater[Record]
 
+  def search(term: String): Set[Record] = {
+    val regex = term.toLowerCase.r
+    find(MongoDBObject("tokens" -> regex))
+  }
+
   def index() {
     collection.ensureIndex(
       MongoDBObject("band" -> 1, "year" -> 1, "name" -> 1),
       "unicity", true
     )
+    collection ensureIndex MongoDBObject("tokens" -> 1)
   }
 }

@@ -1,14 +1,10 @@
 package furet.fs
 
 import furet.model._
-import collection.mutable.{Map => MutableMap, Set => MutableSet}
 import java.io.File
+import collection.mutable.{Set => MutableSet}
 
 class DupFinder(fs: Fs) {
-  type RecordDirs = MutableMap[Record, MutableSet[File]]
-  object RecordDirs {
-    def apply() = MutableMap[Record, MutableSet[File]]()
-  }
 
   def find: RecordDirs = dirsByRecord(fs.find)
 
