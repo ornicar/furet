@@ -9,6 +9,9 @@ class RecordRepo(collection: MongoCollection) extends Repo(collection) {
   type Model = Record
   val mapper = grater[Record]
 
+  override def find(query: MongoDBObject): Set[Model] =
+    collection.find(query).sort(MongoDBObject("tokens" -> -1)).toSet map unserialize
+
   def search(term: String): Set[Record] = {
     val regex = term.toLowerCase.r
     find(MongoDBObject("tokens" -> regex))
