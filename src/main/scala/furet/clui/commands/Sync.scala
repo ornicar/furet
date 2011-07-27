@@ -18,6 +18,6 @@ object Sync extends Command {
     println("Synchronize database <- filesystem from:")
     domain.dirs foreach (d => println("- " + d.getAbsolutePath))
     if (!dryrun) domain.sync()
-    println(domain.dbStore)
+    println(domain.makeDbStore)
   }
 }

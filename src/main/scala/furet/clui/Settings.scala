@@ -46,6 +46,11 @@ class Settings {
         println("Option -d requires an argument")
         sys.exit(1)
 
+      case ("-n" | "--dry") :: rest =>
+        println("*** Dry run ***")
+        dryrun = true
+        parseOptions(rest)
+
       case ("-v" | "--verbose") :: rest =>
         verbose = true
         parseOptions(rest)

@@ -8,14 +8,21 @@ import java.io.File
 
 // Managed part of a filesystem
 class Domain(val dirs: Set[File], val db: Db) {
-  def fsStore: Store = StoreBuilder(dirs)
-  def dbStore: Store = new Store(db.bandRepo.findAll, db.recordRepo.findAll)
+
+  def makeFsStore: Store = StoreBuilder(dirs)
+
+  def makeDbStore: Store =
+    new Store(db.bandRepo.findAll, db.recordRepo.findAll)
+
   def sync() {
+    val (fsStore, dbStore) = (makeFsStore, makeDbStore)
+
     // Make sure the database indexes are set
     db.index()
+
     // Add bands
-    // operate(fs.bands -- db.bands, BandRepo.save, "Add missing bands")
     (fsStore.bands -- dbStore.bands) foreach db.bandRepo.save
+
     // Add records
     (fsStore.records -- dbStore.records) foreach db.recordRepo.save
 
