@@ -2,6 +2,7 @@ package furet.clui
 
 import furet.Domain
 import furet.db.Db
+import furet.fs.Fs
 import scala.collection.mutable
 import java.io.File
 
@@ -14,6 +15,9 @@ class Settings {
 
   // the directories that are being managed
   private[this] var dirs: mutable.Set[File] = mutable.Set()
+
+  // the record regex
+  var regex = """^(.+)\s\-\s\[?(\d+)\]?\s\-\s(.+)$""".r
 
   // whether to actually do the requested work, or to
   // just print out what would be done
@@ -29,7 +33,7 @@ class Settings {
       case d if d.isEmpty => Set(new File("."))
       case d => d.toSet
     }
-    new Domain(domainDirs, Db())
+    new Domain(new Fs(domainDirs, regex), Db())
   }
 
   /** Parse global options from the beginning of a command-line.
@@ -42,7 +46,7 @@ class Settings {
         this.dirs += new File(dirname)
         parseOptions(rest)
 
-      case "-d" :: Nil =>
+      case ("-d" | "--dir") :: Nil =>
         println("Option -d requires an argument")
         sys.exit(1)
 
@@ -53,6 +57,10 @@ class Settings {
 
       case ("-v" | "--verbose") :: rest =>
         verbose = true
+        parseOptions(rest)
+
+      case ("-r" | "--regex") :: regexString :: rest =>
+        regex = regexString.r
         parseOptions(rest)
 
       case "-version" :: rest =>
@@ -72,6 +80,7 @@ class Settings {
       |   -n | --dryrun   Do not actually do anything. Only print out what
       |                   tool would normally do with the following arguments.
       |   -v | --verbose  Output detailed messages about what furet is doing.
+      |   -r | --regex    Regex used to identify a record in the filesystem
       |   -version        Version information.
       |""".stripMargin
 }

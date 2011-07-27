@@ -1,27 +1,24 @@
 package furet.fs
 
 import furet.model._
-import collection.mutable.{HashMap, ListBuffer}
+import collection.mutable.{Map => MutableMap, Set => MutableSet}
 import java.io.File
 
-class DupFinder(val log: Any => Unit) {
-  def run(dirs: Set[File]) {
-    val records = new Finder(Config.regex).find(dirs)
-    val dups = dirsByRecord(records)
-
-    //for (dup in dups) {
-      //println()
-      //println("* " + dup._1)
-      //dup._2 foreach println
-    //}
+class DupFinder(fs: Fs) {
+  type RecordDirs = MutableMap[Record, MutableSet[File]]
+  object RecordDirs {
+    def apply() = MutableMap[Record, MutableSet[File]]()
   }
-  def dirsByRecord(records: List[(File, Record)]):
-    HashMap[Record, ListBuffer[File]] = {
-    val map = HashMap[Record, ListBuffer[File]]()
-    for ((dir, record) <- records) {
+
+  def find: RecordDirs = dirsByRecord(fs.find)
+
+  def dirsByRecord(fsRecords: Set[FsRecord]): RecordDirs = {
+    val map = RecordDirs()
+    for (fsRecord <- fsRecords) {
+      val (record, dir) = (fsRecord.record, fsRecord.dir)
       if (map.contains(record)) map(record) += dir
-      else map(record) = ListBuffer(dir)
+      else map(record) = MutableSet(dir)
     }
-    map filter (_._2.length > 1)
+    map filter (_._2.size > 1)
   }
 }

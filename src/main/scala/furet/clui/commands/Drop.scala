@@ -16,4 +16,3 @@ object Drop extends Command {
       settings.domain.db.drop()
   }
 }
-

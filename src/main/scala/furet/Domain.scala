@@ -7,15 +7,10 @@ import furet.sync._
 import java.io.File
 
 // Managed part of a filesystem
-class Domain(val dirs: Set[File], val db: Db) {
-
-  def makeFsStore: Store = StoreBuilder(dirs)
-
-  def makeDbStore: Store =
-    new Store(db.bandRepo.findAll, db.recordRepo.findAll)
+class Domain(val fs: Fs, val db: Db) {
 
   def sync() {
-    val (fsStore, dbStore) = (makeFsStore, makeDbStore)
+    val (fsStore, dbStore) = (fs.makeStore, db.makeStore)
 
     // Make sure the database indexes are set
     db.index()
@@ -29,4 +24,6 @@ class Domain(val dirs: Set[File], val db: Db) {
     // Records that are in DB but not in FS
     val missings = dbStore.records -- fsStore.records
   }
+
+  def findDup = new DupFinder(fs).find
 }
