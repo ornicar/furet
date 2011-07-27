@@ -19,3 +19,5 @@ resolvers ++= Seq(
 
 // append -deprecation to the options passed to the Scala compiler
 scalacOptions += "-deprecation"
+
+scalacOptions += "-unchecked"

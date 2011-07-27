@@ -1,0 +1,4 @@
+package furet
+
+class renamer {
+}
